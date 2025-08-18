@@ -6,6 +6,11 @@ use Exception;
 
 class FriendRequestAlreadySentException extends Exception
 {
-    protected $message = 'Já foi feito um pedido de amizade';
+    protected $message;
     protected $code = 500;
+
+    public function __construct()
+    {
+        parent::__construct(__('exceptions.friendRequestAlreadySentException'), $this->code);
+    }
 }

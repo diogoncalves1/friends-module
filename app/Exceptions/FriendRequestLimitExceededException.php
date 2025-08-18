@@ -6,6 +6,11 @@ use Exception;
 
 class FriendRequestLimitExceededException extends Exception
 {
-    protected $message = 'Limite de pedidos enviados';
+    protected $message;
     protected $code = 500;
+
+    public function __construct()
+    {
+        parent::__construct(__('exceptions.friendRequestLimitExceededException'), $this->code);
+    }
 }

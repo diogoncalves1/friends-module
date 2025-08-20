@@ -4,8 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\FriendshipRepository;
-use Illuminate\Http\Request;
-use Modules\User\Entities\User;
 
 class FriendshipController extends Controller
 {
@@ -39,12 +37,16 @@ class FriendshipController extends Controller
 
     public function remove(string $id)
     {
-        //
+        $response = auth()->user()->removeRelation($id);
+
+        return $response;
     }
 
     public function block(string $id)
     {
-        //
+        $response = auth()->user()->blockUser($id);
+
+        return $response;
     }
 
     public function listFriends()

@@ -118,61 +118,7 @@ class UserRepository implements RepositoryInterface
         }
     }
 
-    public function dataTable(Request $request)
-    {
-        $query = User::whereDoesntHave('roles', function ($query) {
-            $query->where('code', 'superAdmin');
-        });
-        if ($search = $request->input('search.value')) {
-            $query->where(function ($q) use ($search) {
-                $q->where("name", 'like', "{$search}%")
-                    ->orWhere("email", 'like', "{$search}%")
-                    ->whereHas("roles", function ($query) use ($search) {
-                        $query->where('name', $search);
-                    });
-            });
-        }
-
-        $orderColumnIndex = $request->input('order.0.column');
-        $orderColumn = $request->input("columns.$orderColumnIndex.data");
-        $orderDir = $request->input('order.0.dir');
-        if ($orderColumn && $orderDir) {
-            $query->orderBy($orderColumn, $orderDir);
-        }
-
-        $total = $query->count();
-
-        $users = $query->offset($request->start)
-            ->limit($request->length)
-            ->select("name", "email", "id")
-            ->get();
-
-        foreach ($users as &$user) {
-            $user->roles->pluck('name')->toArray();
-            $user->actions = "<div class='btn-group'>
-                            <a type='button' href='" . route('admin.users.manage', $user->id) . "' class='btn mr-1 btn-default'>
-                                <i class='fas fa-cogs'></i>
-                            </a>
-                            <a type='button' href='" . route('admin.users.edit', $user->id) . "' class='btn mr-1 btn-default'>
-                                <i class='fas fa-edit'></i>
-                            </a>
-                            <button type='button' onclick='modalDelete({$user->id})' class='btn btn-default'>
-                                <i class='fas fa-trash'></i>
-                            </button>
-                        </div>";
-        }
-
-        $data = [
-            'draw' => intval($request->draw),
-            'recordsTotal' => $total,
-            'recordsFiltered' => $total,
-            'data' => $users
-        ];
-
-        return $data;
-    }
-
-    public function updateRoles(User $user, array $roles)
+    public function updateRoles(User $user, ?array $roles = null)
     {
         try {
             DB::transaction(function () use ($user, $roles) {

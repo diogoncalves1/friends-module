@@ -1,4 +1,5 @@
 {
     "User": true,
-    "Permission": true
+    "Permission": true,
+    "Friends": true
 }

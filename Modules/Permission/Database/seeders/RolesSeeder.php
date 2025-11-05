@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Permission\Database\seeders;
+namespace Modules\Permission\Database\Seeders;
 
 use Modules\Permission\Entities\Role;
 use Illuminate\Database\Seeder;

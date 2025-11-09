@@ -2,5 +2,6 @@
     "User": true,
     "Permission": true,
     "Friends": true,
-    "ApiResponder": true
+    "ApiResponder": true,
+    "UserPreferences": true
 }

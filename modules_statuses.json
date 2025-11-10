@@ -1,5 +1,7 @@
 {
     "User": true,
     "Permission": true,
-    "Friends": true
+    "Friends": true,
+    "ApiResponder": true,
+    "UserPreferences": true
 }

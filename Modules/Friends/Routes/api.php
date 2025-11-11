@@ -1,8 +1,8 @@
 <?php
 
+use Modules\Friends\Http\Controllers\Api\FriendshipController;
 use Illuminate\Support\Facades\Route;
-use Modules\Friends\Http\Controllers\FriendsController;
-
+use Modules\Friends\Http\Controllers\Api\FriendshipRequestController;
 
 Route::group(
     [
@@ -19,15 +19,20 @@ Route::group(
                     'as' => 'friendships.',
                     'prefix' => 'friendships'
                 ], function () {
-                    Route::post('/{id}/send', [\App\Http\Controllers\Api\FriendshipController::class, 'send'])->name('send');
-                    Route::post('/{id}/accept', [\App\Http\Controllers\Api\FriendshipController::class, 'accept'])->name('accept');
-                    Route::delete('/{id}/decline', [\App\Http\Controllers\Api\FriendshipController::class, 'decline'])->name('decline');
-                    Route::delete('/{id}/remove', [\App\Http\Controllers\Api\FriendshipController::class, 'remove'])->name('remove');
-                    Route::post('/{id}/block', [\App\Http\Controllers\Api\FriendshipController::class, 'block'])->name('block');
-                    Route::post('/{id}/unlock', [\App\Http\Controllers\Api\FriendshipController::class, 'unlock'])->name('unlock');
-                    Route::get('/', [\App\Http\Controllers\Api\FriendshipController::class, 'listFriends']);
-                    Route::get('/pending', [\App\Http\Controllers\Api\FriendshipController::class, 'listPending']);
-                    Route::get('/blocked', [\App\Http\Controllers\Api\FriendshipController::class, 'listBlocked']);
+                    Route::delete('/{id}/remove', [FriendshipController::class, 'remove'])->name('remove');
+                    Route::post('/{id}/block', [FriendshipController::class, 'block'])->name('block');
+                    Route::post('/{id}/unblock', [FriendshipController::class, 'unblock'])->name('unblock');
+                    Route::get('/', [FriendshipController::class, 'listFriends']);
+                    Route::get('/blocked', [FriendshipController::class, 'listBlocked']);
+                });
+                Route::group([
+                    'as' => 'friendship-requests',
+                    'prefix' => 'friendship-requests'
+                ], function () {
+                    Route::post('{id}/send', [FriendshipRequestController::class, 'send'])->name('send');
+                    Route::post('{id}/accept', [FriendshipRequestController::class, 'accept'])->name('accept');
+                    Route::delete('{id}/decline', [FriendshipRequestController::class, 'decline'])->name('decline');
+                    Route::get('pending', [FriendshipRequestController::class, 'listPending']);
                 });
             }
         );

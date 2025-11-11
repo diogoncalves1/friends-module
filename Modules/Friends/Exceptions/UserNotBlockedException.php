@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace Modules\Friends\Exceptions;
 
 use Exception;
 

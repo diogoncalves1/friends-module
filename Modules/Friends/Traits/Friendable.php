@@ -2,7 +2,7 @@
 
 namespace Modules\Friends\Traits;
 
-use App\Repositories\FriendshipRepository;
+use Modules\Friends\Repositories\FriendshipRepository;
 
 trait Friendable
 {

@@ -1,12 +1,16 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace Modules\Friends\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Repositories\FriendshipRepository;
+use App\Http\Controllers\ApiController;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Modules\Friends\DataTables\FriendshipDataTable;
+use Modules\Friends\Http\Resources\FriendshipResource;
+use Modules\Friends\Repositories\FriendshipRepository;
 
-class FriendshipController extends Controller
+class FriendshipController extends ApiController
 {
     private FriendshipRepository $friendshipRepository;
 
@@ -15,67 +19,81 @@ class FriendshipController extends Controller
         $this->friendshipRepository = $friendshipRepository;
     }
 
-    public function send(Request $request, string $id)
+    /**
+     * Remove a friend.
+     * @param Request $request
+     * @param string $id
+     * @return JsonResponse
+     */
+    public function remove(Request $request, string $id): JsonResponse
     {
-        $response = $this->friendshipRepository->send($request, $id);
+        try {
+            $this->friendshipRepository->remove($request, $id);
 
-        return $response;
+            return $this->ok(message: __('friends::messages.friendships.remove'));
+        } catch (\Exception $e) {
+            Log::error($e);
+            return $this->fail($e->getMessage() ?? __('friends::messages.friendships.errors.remove'), $e, $e->getCode());
+        }
     }
 
-    public function accept(Request $request, string $id)
-    {
-
-        $response = $this->friendshipRepository->accept($request, $id);
-
-        return $response;
-    }
-
-    public function decline(Request $request, string $id)
-    {
-        $response = $this->friendshipRepository->decline($request, $id);
-
-        return $response;
-    }
-
-    public function remove(Request $request, string $id)
-    {
-        $response = $this->friendshipRepository->remove($request, $id);
-
-        return $response;
-    }
-
+    /**
+     * Block a user.
+     * @param Request $request
+     * @param string $id
+     * @return JsonResponse
+     */
     public function block(Request $request, string $id)
     {
-        $response = $this->friendshipRepository->block($request, $id);
+        try {
+            $friendship = $this->friendshipRepository->block($request, $id);
 
-        return $response;
+            return $this->ok(new FriendshipResource($friendship), __('friends::messages.friendships.block', ['name' => $friendship->receiver->name]));
+        } catch (\Exception $e) {
+            Log::error($e);
+            return $this->fail($e->getMessage() ?? __('friends::messages.friendships.errors.block'), $e, $e->getCode());
+        }
     }
 
-    public function unlock(Request $request, string $id)
+    /**
+     * Unblock a friend.
+     * @param Request $request
+     * @param string $id
+     * @return JsonResponse
+     */
+    public function unblock(Request $request, string $id)
     {
-        $response = $this->friendshipRepository->unlock($request, $id);
+        try {
+            $friendship = $this->friendshipRepository->unblock($request, $id);
 
-        return $response;
+            return $this->ok(message: __('friends::messages.friendships.unblock', ['name' => $friendship->receiver->name]));
+        } catch (\Exception $e) {
+            Log::error($e);
+            return $this->fail($e->getMessage() ?? __('friends::messages.friendships.errors.unblock'), $e, $e->getCode());
+        }
     }
 
-    public function listFriends(Request $request)
+    public function listFriends(FriendshipDataTable $dataTable)
     {
-        $response = $this->friendshipRepository->listFriends($request, 'accepted');
+        try {
+            $dataTable->type = 'friend';
 
-        return $response;
+            return $dataTable->ajax();
+        } catch (\Exception $e) {
+            Log::error($e);
+            return $this->fail($e->getMessage(), $e, $e->getCode());
+        }
     }
 
-    public function listPending(Request $request)
+    public function listBlocked(FriendshipDataTable $dataTable)
     {
-        $response = $this->friendshipRepository->listFriends($request, 'pending');
+        try {
+            $dataTable->type = 'blocked';
 
-        return $response;
-    }
-
-    public function listBlocked(Request $request)
-    {
-        $response = $this->friendshipRepository->listFriends($request, 'blocked');
-
-        return $response;
+            return $dataTable->ajax();
+        } catch (\Exception $e) {
+            Log::error($e);
+            return $this->fail($e->getMessage(), $e, $e->getCode());
+        }
     }
 }

@@ -1,21 +1,17 @@
 <?php
 
-namespace Modules\User\Http\Resources;
+namespace Modules\Friends\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class FriendshipResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      */
     public function toArray(Request $request): array
     {
-        return [
-            'name' => $this->name,
-            'email' => $this->email,
-            'roles' => $this->roles,
-        ];
+        return parent::toArray($request);
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace Modules\Friends\Exceptions;
 
 use Exception;
 
@@ -11,6 +11,6 @@ class FriendRequestLimitExceededException extends Exception
 
     public function __construct()
     {
-        parent::__construct(__('friends::exceptions.friendships.friendRequestLimitExceededException'), $this->code);
+        parent::__construct(__('friends::exceptions.friendships-requests.friendRequestLimitExceededException'), $this->code);
     }
 }

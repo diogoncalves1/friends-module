@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Core;
+namespace Modules\Friends\Core;
 
 use DateTime;
 

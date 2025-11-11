@@ -19,7 +19,6 @@ class Friendship extends Model
         return \Modules\Friends\Database\Factories\FriendshipFactory::new();
     }
 
-
     public function sender()
     {
         return $this->belongsTo(User::class);
